@@ -20,7 +20,6 @@ PAGES = {
     "Sobre o projeto": ("Sobre o projeto", None),
 }
 page = st.sidebar.radio("Navegação", list(PAGES))
-mode = st.sidebar.selectbox("Fonte de dados", ["Demonstração", "Integração real"])
 st.sidebar.caption("Lajeado / RS · Monitoramento meteorológico")
 heading, renderer = PAGES[page]
 layout.title(heading, "Inteligência meteorológica para pulverização agrícola")
@@ -31,17 +30,20 @@ elif page == "Sobre o projeto":
     about.render()
 else:
     try:
-        data = build_application("demo" if mode == "Demonstração" else "real")
+        data = build_application("real")
         layout.provenance(data)
         frame = period_filters(data.frame)
         if frame.empty:
             st.info("Nenhum registro no recorte selecionado. Ajuste o período ou a natureza dos dados.")
         else:
-            st.caption(f"{len(frame)} registros selecionados · {frame.timestamp.min():%d/%m/%Y %H:%M} a {frame.timestamp.max():%d/%m/%Y %H:%M}")
+            st.caption(
+                f"{len(frame)} registros selecionados · "
+                f"{frame.timestamp.min():%d/%m/%Y %H:%M} a {frame.timestamp.max():%d/%m/%Y %H:%M}"
+            )
             renderer(frame, data.is_demo)
     except (IntegrationUnavailable, ContractError, ValueError) as exc:
         st.error(str(exc))
-        st.info("Selecione Demonstração para explorar a aplicação. Instruções para integrar as fontes: docs/INTEGRACAO.md.")
+        st.info("Verifique os caminhos dos dados da Etapa 3 e do modelo da Etapa 4. Instruções: docs/INTEGRACAO.md.")
     except Exception:
         logging.exception("Falha inesperada ao apresentar os dados")
         st.error("Não foi possível exibir os dados. Consulte o terminal e verifique o adaptador conectado.")
