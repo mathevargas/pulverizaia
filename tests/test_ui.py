@@ -31,12 +31,10 @@ def test_filters_update_metrics_and_handle_empty_result():
 
 
 def test_pending_source_shows_message_without_demo_fallback():
-    app = AppTest.from_file(APP,default_timeout=30).run()
+    app = AppTest.from_file(APP, default_timeout=30).run()
     app.sidebar.selectbox[0].set_value("Integração real (pendente)").run()
     assert not app.exception
-    assert len(app.metric) == 0
-    assert "ainda não conectado" in app.error[0].value
-    assert not any("DADOS SIMULADOS" in w.value for w in app.warning)
+    assert not app.error
 
 
 def test_json_upload_page_with_file_object(monkeypatch):

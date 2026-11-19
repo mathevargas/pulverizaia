@@ -1,4 +1,5 @@
 """Contratos internos estritos. Validar não significa limpar dados da empresa."""
+
 from dataclasses import dataclass
 from datetime import datetime
 from math import isfinite
@@ -18,7 +19,11 @@ def _text(value, field):
 
 
 def _timestamp(value):
-    if not isinstance(value, datetime) or value.tzinfo is None or value.utcoffset() is None:
+    if (
+        not isinstance(value, datetime)
+        or value.tzinfo is None
+        or value.utcoffset() is None
+    ):
         raise ContractError("timestamp: forneça datetime válido com fuso horário.")
     if str(value) == "NaT":
         raise ContractError("timestamp não pode ser NaT.")
@@ -29,7 +34,12 @@ def _number(value, field, minimum=None, maximum=None):
         return
     if isinstance(value, bool) or not isinstance(value, Real) or not isfinite(value):
         raise ContractError(f"{field}: número finito ou None obrigatório.")
-    if minimum is not None and value < minimum or maximum is not None and value > maximum:
+    if (
+        minimum is not None
+        and value < minimum
+        or maximum is not None
+        and value > maximum
+    ):
         raise ContractError(f"{field}: valor fora do domínio do contrato.")
 
 
@@ -64,17 +74,27 @@ class WeatherBatch:
     def __post_init__(self):
         if type(self.is_demo) is not bool:
             raise ContractError("is_demo deve ser booleano explícito.")
-        if not isinstance(self.records, tuple) or not all(isinstance(r, WeatherRecord) for r in self.records):
+        if not isinstance(self.records, tuple) or not all(
+            isinstance(r, WeatherRecord) for r in self.records
+        ):
             raise ContractError("records deve ser uma tupla de WeatherRecord.")
         stamps = [r.timestamp for r in self.records]
         if len(stamps) != len(set(stamps)):
-            raise ContractError("Horários duplicados: entregue uma série única por lote.")
+            raise ContractError(
+                "Horários duplicados: entregue uma série única por lote."
+            )
 
 
 @dataclass(frozen=True)
 class ClassificationResult:
     timestamp: datetime
-    predicted_class: Literal["Favorável", "Desfavorável", "Dados insuficientes"]
+    predicted_class: Literal[
+        "Favorável",
+        "Desfavorável",
+        "Chuva prevista",
+        "Sem chuva prevista",
+        "Dados insuficientes",
+    ]
     origin: str
     is_demo: bool
     justifications: tuple[str, ...] = ()
@@ -96,4 +116,6 @@ class ClassificationResult:
                 _text(value, field)
         _number(self.confidence, "confidence", 0, 1)
         if self.is_demo and self.confidence is not None:
-            raise ContractError("Resultados demonstrativos não podem conter confiança fictícia.")
+            raise ContractError(
+                "Resultados demonstrativos não podem conter confiança fictícia."
+            )

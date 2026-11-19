@@ -20,7 +20,7 @@ PAGES = {
     "Sobre o projeto": ("Sobre o projeto", None),
 }
 page = st.sidebar.radio("Navegação", list(PAGES))
-mode = st.sidebar.selectbox("Fonte de dados", ["Demonstração", "Integração real (pendente)"])
+mode = st.sidebar.selectbox("Fonte de dados", ["Demonstração", "Integração real"])
 st.sidebar.caption("Lajeado / RS · Monitoramento meteorológico")
 heading, renderer = PAGES[page]
 layout.title(heading, "Inteligência meteorológica para pulverização agrícola")

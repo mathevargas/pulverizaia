@@ -11,5 +11,11 @@ WEATHER_FIELDS = {
     "precipitation_mm": ("Precipitação", "mm"),
     "pressure_hpa": ("Pressão atmosférica", "hPa"),
 }
-CLASSES = ("Favorável", "Desfavorável", "Dados insuficientes")
+CLASSES = (
+    "Favorável",
+    "Desfavorável",
+    "Chuva prevista",
+    "Sem chuva prevista",
+    "Dados insuficientes",
+)
 KIND_LABELS = {"historical": "Histórico observado", "forecast": "Previsão da fonte"}

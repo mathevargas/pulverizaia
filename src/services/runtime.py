@@ -6,7 +6,7 @@ from src.integrations.interfaces import WeatherSource, ClassificationProvider, I
 from src.integrations.pending import RealWeatherSource, ExternalModelProvider
 from src.services.demo import DemoWeatherSource, DemoClassificationProvider
 from src.services.presentation import with_results
-
+from src.integrations.etapa4_adapter import Etapa4WeatherSource, Etapa4ModelProvider
 
 @dataclass
 class ApplicationData:
@@ -30,5 +30,5 @@ def build_application(mode="demo"):
     if mode == "demo":
         return load_application(DemoWeatherSource(), DemoClassificationProvider())
     if mode == "real":
-        return load_application(RealWeatherSource(), ExternalModelProvider())
+        return load_application(Etapa4WeatherSource(), Etapa4ModelProvider())
     raise ValueError("Modo de dados desconhecido.")
